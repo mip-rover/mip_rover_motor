@@ -1,0 +1,45 @@
+#!/usr/bin/env python
+
+import rospy
+import numpy as np
+import yaml
+
+from motor import Driver
+from geometry_msgs.msg import Twist
+
+if __name__ == '__main__':
+
+    rospy.init_node('motor_sin_test')
+
+    params = None
+    param_path = rospy.get_param('~mip_rover_motor_config_path')
+    with open(param_path, 'r') as f:
+        params = yaml.load(f.read())
+    rospy.set_param('/mip_rover/motor_controller', params)
+
+    motor_controller = Driver()
+
+    motor_rpm = rospy.get_param('/mip_rover/motors/max_rpm')
+    r = rospy.get_param('/mip_rover/geometry/r')
+    max_v = (2 * np.pi * motor_rpm * r) / 60
+    freq = .1
+    duration = 60
+
+    twist_pub = rospy.Publisher('cmd_vel', Twist, queue_size=1000)
+    twist_cmd = Twist()
+    twist_cmd.linear.x = 0.0
+    twist_cmd.angular.z = 0.0
+
+    rate = rospy.Rate(50)
+    stop_time = rospy.Time.now() + rospy.Duration(duration);
+    while not rospy.is_shutdown() and rospy.Time.now() < stop_time:
+        t = rospy.Time.now()
+        if t >= stop_time:
+            break
+        twist_cmd.linear.x = max_v * np.sin(2 * np.pi * freq * t.to_sec())
+        motor_controller.twist_handler(twist_cmd)
+        rate.sleep()
+
+    twist_cmd.linear.x = 0.0
+    twist_pub.publish(twist_cmd)
+

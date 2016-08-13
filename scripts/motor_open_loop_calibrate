@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+
+import rospy
+
+from mip_rover_lowlevel.msg import MotorRate
+from geometry_msgs.msg import Twist
+
+current_motor_rate = MotorRate()
+
+
+def motor_rate_handler(motor_rate_msg):
+    global current_motor_rate
+    current_motor_rate = motor_rate_msg
+
+
+if __name__ == '__main__':
+    rospy.init_node('motor_open_loop_calibrate')
+
+    motor_rate_sub = rospy.Subscriber('/mip_rover/motors/rates', MotorRate, motor_rate_handler)
+
+    twist_pub = rospy.Publisher('cmd_vel', Twist, queue_size=1000)
+    twist_cmd = Twist()
+    twist_cmd.linear.x = 0.25
+    twist_cmd.angular.z = 0.0;
+
+    rate = rospy.Rate(50)
+    stop_time = rospy.Time.now() + rospy.Duration(1.0);
+    while not rospy.is_shutdown() and rospy.Time.now() < stop_time:
+        print('Rates: {:f} {:f}'.format(current_motor_rate.left_motor_rate, current_motor_rate.right_motor_rate))
+        twist_pub.publish(twist_cmd)
+        rate.sleep()
+

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../mip_rover_lowlevel/.idea/mip_rover_lowlevel.iml" filepath="$PROJECT_DIR$/../mip_rover_lowlevel/.idea/mip_rover_lowlevel.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/mip_rover_motor.iml" filepath="$PROJECT_DIR$/.idea/mip_rover_motor.iml" />
+    </modules>
+  </component>
+</project>

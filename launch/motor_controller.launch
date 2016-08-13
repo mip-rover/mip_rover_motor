@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<launch>
+    <node pkg="mip_rover_motor" type="motor_controller" name="motor_controller" respawn="true"
+          output="screen">
+        <param name="mip_rover_motor_config_path" value="$(find mip_rover_motor)/params/motor_config.yaml"/>
+    </node>
+</launch>

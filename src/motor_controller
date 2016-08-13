@@ -1,0 +1,28 @@
+#!/usr/bin/env python
+
+import yaml
+import rospy
+
+from motor import Driver
+
+if __name__ == "__main__":
+    try:
+        rospy.init_node('motor_controller')
+
+        params = None
+        param_path = rospy.get_param('~mip_rover_motor_config_path')
+        with open(param_path, 'r') as f:
+            params = yaml.load(f.read())
+        rospy.set_param('/mip_rover/motor_controller', params)
+
+        driver = Driver()
+
+        motor_timeout = params["motor_timeout"]
+        rate = rospy.Rate(50)
+        while not rospy.is_shutdown():
+            if rospy.get_time() - driver.last_cmd_time.to_sec() > motor_timeout:
+                driver.motors_off()
+            rate.sleep()
+
+    except rospy.ROSInterruptException:
+        pass

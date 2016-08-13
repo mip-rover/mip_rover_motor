@@ -1,0 +1,9 @@
+motor_timeout: 0.1
+motor_gain:
+- [1]
+- [1]
+motor_bias:
+- [0]
+- [0]
+kd: 1.0
+kp: 1.0
